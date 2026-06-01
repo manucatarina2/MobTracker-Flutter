@@ -116,7 +116,7 @@ class AuthRepository {
       return null;
     } catch (e) {
       print('ERRO no login: $e');
-      return null;
+      rethrow;
     }
   }
   

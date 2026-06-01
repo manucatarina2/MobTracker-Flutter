@@ -617,25 +617,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              Container(
-                                width: 95,
-                                height: 32,
-                                decoration: BoxDecoration(
-                                  color: primaryDark,
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Text("Ver todas",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w500)),
-                                    SizedBox(width: 4),
-                                    Icon(Icons.chevron_right,
-                                        color: Colors.white, size: 14),
-                                  ],
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const LinhasScreen()),
+                                  );
+                                },
+                                child: Container(
+                                  width: 95,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: primaryDark,
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text("Ver todas",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w500)),
+                                      SizedBox(width: 4),
+                                      Icon(Icons.chevron_right,
+                                          color: Colors.white, size: 14),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

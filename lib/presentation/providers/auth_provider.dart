@@ -1,4 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+// existing imports remain
 import '../../data/models/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -50,7 +51,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         return false;
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Erro ao fazer login: $e');
+      String errorMessage = e is AuthException ? e.message : e.toString();
+      state = state.copyWith(isLoading: false, error: errorMessage);
       return false;
     }
   }

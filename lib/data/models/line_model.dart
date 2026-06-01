@@ -30,6 +30,60 @@ class LineModel {
     required this.averageDriverRating,
     required this.reports,
   });
+
+  /// Factory to create a [LineModel] from Supabase JSON response.
+  factory LineModel.fromJson(Map<String, dynamic> json) {
+    final detalhes = json['detalhes'] as Map<String, dynamic>? ?? {};
+    // Frequency parsing
+    final freqJson = detalhes['frequency'] as Map<String, dynamic>? ?? {};
+    LineFrequency parseFrequency() {
+      FrequencyDetail parseDetail(String key) {
+        final info = freqJson[key] as Map<String, dynamic>? ?? {};
+        return FrequencyDetail(
+          operates: (info['buses'] != null && (info['buses'] as int) > 0),
+          buses: info['buses'] as int? ?? 0,
+          trips: info['trips'] as int? ?? 0,
+        );
+      }
+      return LineFrequency(
+        diasUteis: parseDetail('weekdays'),
+        sabados: parseDetail('saturday'),
+        domingos: parseDetail('sunday'),
+      );
+    }
+    // Route parsing helper
+    LineRoute parseRoute(String key) {
+      final routeJson = detalhes[key] as Map<String, dynamic>? ?? {};
+      final label = routeJson['label'] as String? ?? '';
+      final stopsList = (routeJson['stops'] as List<dynamic>? ?? [])
+          .map((e) => RouteStop(name: e as String, isMain: false))
+          .toList();
+      return LineRoute(title: label, stops: stopsList);
+    }
+    // Ratings
+    final ratings = detalhes['ratings'] as Map<String, dynamic>? ?? {};
+    double parseRating(String key) {
+      final val = ratings[key];
+      if (val == null) return 0.0;
+      return (val is int) ? val.toDouble() : (val as num).toDouble();
+    }
+    return LineModel(
+      id: json['id']?.toString() ?? '',
+      number: json['numero']?.toString() ?? '',
+      title: json['nome']?.toString() ?? '',
+      description: json['descricao']?.toString() ?? '',
+      tripsBadge: '',
+      alerts: [],
+      frequency: parseFrequency(),
+      travelTime: detalhes['duration']?.toString() ?? '',
+      transitTime: detalhes['peakTrafficTime']?.toString() ?? '',
+      trajetoIda: parseRoute('forward'),
+      trajetoVolta: parseRoute('return'),
+      averageLineRating: parseRating('line'),
+      averageDriverRating: parseRating('driver'),
+      reports: [],
+    );
+  }
 }
 
 class LineFrequency {
@@ -78,7 +132,7 @@ class RouteStop {
 
 class LineReport {
   final String tag;
-  final String tagType; // 'positive' ou 'negative'
+  final String tagType; // 'positive' or 'negative'
   final String author;
   final String dateTime;
   final String comment;
